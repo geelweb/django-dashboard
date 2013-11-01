@@ -39,89 +39,105 @@ var iWidget = {
         return (id&&settings.widgetIndividual[id]) ? $.extend({},settings.widgetDefault,settings.widgetIndividual[id]) : settings.widgetDefault;
     },
 
+    addWidgetControl : function (w) {
+        var iWidget = this,
+            $ = this.jQuery,
+            settings = this.settings;
+        var thisWidgetSettings = iWidget.getWidgetSettings(w.id);
+        if (thisWidgetSettings.removable) {
+            $('<a href="#" class="remove pull-right"><span class="glyphicon glyphicon-remove"></span></a>').mousedown(function (e) {
+                e.stopPropagation();
+            }).click(function () {
+                if(confirm('This widget will be removed, ok?')) {
+                    $(this).parents(settings.widgetSelector).animate({
+                        opacity: 0
+                    },function () {
+                        $(this).wrap('<div/>').parent().slideUp(function () {
+                            $(this).remove();
+                        });
+                    });
+                }
+                return false;
+            }).appendTo($(settings.handleSelector, w));
+        }
+
+        if (thisWidgetSettings.editable) {
+            $('<a href="#" class="edit pull-right"><span class="glyphicon glyphicon-wrench"></span></a>').mousedown(function (e) {
+                e.stopPropagation();
+            }).click(function(e) {
+                e.stopPropagation();
+                $(this).css({backgroundPosition: '-66px 0', width: '55px'})
+                    .parents(settings.widgetSelector)
+                    .find('.edit-box').toggle();
+            }).appendTo($(settings.handleSelector,w));
+
+            var editBox = $('<div class="edit-box" style="display:none;"/>');
+            editBox.append('<ul><li class="item"><label>Change the title?</label><input value="' + $('span#title',w).text() + '"/></li>')
+                .append((function(){
+                    var colorList = '<li class="item"><label>Available colors:</label><ul class="colors">';
+                    $(thisWidgetSettings.colorClasses).each(function () {
+                        colorList += '<li class="' + this + '"/>';
+                    });
+                    return colorList + '</ul>';
+                })())
+                .append('</ul>')
+                .insertAfter($(settings.handleSelector,w));
+            iWidget.activateEditBox(editBox);
+        }
+
+        if (thisWidgetSettings.collapsible) {
+            $('<a href="#" class="widget-collapse pull-left"><span class="glyphicon glyphicon-collapse-up"></span></a>').mousedown(function (e) {
+                e.stopPropagation();
+            }).click(function(e) {
+                e.stopPropagation();
+                $(this).css({backgroundPosition: ''})
+                    .parents(settings.widgetSelector)
+                        .find(settings.contentSelector).toggle(400, function() {
+                            var elm = $(this).parents(settings.widgetSelector).find(settings.handleSelector + ' .widget-collapse span');
+                            if ($(this).is(':visible')) {
+                                elm.removeClass('glyphicon-collapse-down').addClass('glyphicon-collapse-up');
+                            } else {
+                                elm.removeClass('glyphicon-collapse-up').addClass('glyphicon-collapse-down');
+                            }
+                        });
+            }).prependTo($(settings.handleSelector,w));
+        }
+    },
+
+    activateEditBox : function(b) {
+        var iWidget = this,
+            $ = this.jQuery,
+            settings = this.settings;
+
+        $('input',b).keyup(function () {
+            $(this).parents(settings.widgetSelector).find('span#title').text( $(this).val().length>20 ? $(this).val().substr(0,20)+'...' : $(this).val() );
+        });
+        $('ul.colors li',b).click(function () {
+
+            var colorStylePattern = /\bcolor-[\w]{1,}\b/,
+                elm = $(this).parents(settings.widgetSelector).find(settings.handleSelector),
+                thisWidgetColorClass = elm.attr('class').match(colorStylePattern)
+
+            if (thisWidgetColorClass) {
+                elm.removeClass(thisWidgetColorClass[0]);
+            }
+
+            elm.addClass($(this).attr('class').match(colorStylePattern)[0])
+            return false;
+        });
+    },
+
     addWidgetControls : function () {
         var iWidget = this,
             $ = this.jQuery,
             settings = this.settings;
 
         $(settings.widgetSelector, $(settings.columns)).each(function () {
-            var thisWidgetSettings = iWidget.getWidgetSettings(this.id);
-            if (thisWidgetSettings.removable) {
-                $('<a href="#" class="remove pull-right"><span class="glyphicon glyphicon-remove"></span></a>').mousedown(function (e) {
-                    e.stopPropagation();
-                }).click(function () {
-                    if(confirm('This widget will be removed, ok?')) {
-                        $(this).parents(settings.widgetSelector).animate({
-                            opacity: 0
-                        },function () {
-                            $(this).wrap('<div/>').parent().slideUp(function () {
-                                $(this).remove();
-                            });
-                        });
-                    }
-                    return false;
-                }).appendTo($(settings.handleSelector, this));
-            }
-
-            if (thisWidgetSettings.editable) {
-                $('<a href="#" class="edit pull-right"><span class="glyphicon glyphicon-wrench"></span></a>').mousedown(function (e) {
-                    e.stopPropagation();
-                }).click(function(e) {
-                    e.stopPropagation();
-                    $(this).css({backgroundPosition: '-66px 0', width: '55px'})
-                        .parents(settings.widgetSelector)
-                        .find('.edit-box').toggle();
-                }).appendTo($(settings.handleSelector,this));
-
-                $('<div class="edit-box" style="display:none;"/>')
-                    .append('<ul><li class="item"><label>Change the title?</label><input value="' + $('span#title',this).text() + '"/></li>')
-                    .append((function(){
-                        var colorList = '<li class="item"><label>Available colors:</label><ul class="colors">';
-                        $(thisWidgetSettings.colorClasses).each(function () {
-                            colorList += '<li class="' + this + '"/>';
-                        });
-                        return colorList + '</ul>';
-                    })())
-                    .append('</ul>')
-                    .insertAfter($(settings.handleSelector,this));
-            }
-
-            if (thisWidgetSettings.collapsible) {
-                $('<a href="#" class="widget-collapse pull-left"><span class="glyphicon glyphicon-collapse-up"></span></a>').mousedown(function (e) {
-                    e.stopPropagation();
-                }).click(function(e) {
-                    e.stopPropagation();
-                    $(this).css({backgroundPosition: ''})
-                        .parents(settings.widgetSelector)
-                            .find(settings.contentSelector).toggle(400, function() {
-                                var elm = $(this).parents(settings.widgetSelector).find(settings.handleSelector + ' .widget-collapse span');
-                                if ($(this).is(':visible')) {
-                                    elm.removeClass('glyphicon-collapse-down').addClass('glyphicon-collapse-up');
-                                } else {
-                                    elm.removeClass('glyphicon-collapse-up').addClass('glyphicon-collapse-down');
-                                }
-                            });
-                }).prependTo($(settings.handleSelector,this));
-            }
+            iWidget.addWidgetControl(this);
         });
 
         $('.edit-box').each(function () {
-            $('input',this).keyup(function () {
-                $(this).parents(settings.widgetSelector).find('span#title').text( $(this).val().length>20 ? $(this).val().substr(0,20)+'...' : $(this).val() );
-            });
-            $('ul.colors li',this).click(function () {
-
-                var colorStylePattern = /\bcolor-[\w]{1,}\b/,
-                    elm = $(this).parents(settings.widgetSelector).find(settings.handleSelector),
-                    thisWidgetColorClass = elm.attr('class').match(colorStylePattern)
-
-                if (thisWidgetColorClass) {
-                    elm.removeClass(thisWidgetColorClass[0]);
-                }
-
-                elm.addClass($(this).attr('class').match(colorStylePattern)[0])
-                return false;
-            });
+            iWidget.activateEditBox(this);
         });
 
     },
@@ -129,6 +145,26 @@ var iWidget = {
     attachStylesheet : function (href) {
         var $ = this.jQuery;
         return $('<link href="' + href + '" rel="stylesheet" type="text/css" />').appendTo('head');
+    },
+
+    makeWidgetSortable : function(w) {
+        var iWidget = this,
+            $ = this.jQuery,
+            settings = this.settings;
+        w.css({
+            cursor: 'move'
+        }).mousedown(function (e) {
+            $sortableItems.css({width:''});
+            $(this).parent().css({
+                width: $(this).parent().width() + 'px'
+            });
+        }).mouseup(function () {
+            if(!$(this).parent().hasClass('dragging')) {
+                $(this).parent().css({width:''});
+            } else {
+                $(settings.columns).sortable('disable');
+            }
+        });
     },
 
     makeSortable : function () {
@@ -148,19 +184,8 @@ var iWidget = {
                 return $('> li:not(' + notSortable + ')', settings.columns);
             })();
 
-        $sortableItems.find(settings.handleSelector).css({
-            cursor: 'move'
-        }).mousedown(function (e) {
-            $sortableItems.css({width:''});
-            $(this).parent().css({
-                width: $(this).parent().width() + 'px'
-            });
-        }).mouseup(function () {
-            if(!$(this).parent().hasClass('dragging')) {
-                $(this).parent().css({width:''});
-            } else {
-                $(settings.columns).sortable('disable');
-            }
+        $sortableItems.find(settings.handleSelector).each(function(){
+            iWidget.makeWidgetSortable($(this));
         });
 
         $(settings.columns).sortable({

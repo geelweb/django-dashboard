@@ -12,7 +12,6 @@
 
 <div id="columns" class="row">
     <ul id="column1" class="col-lg-4 list-unstyled column">
-        {% include_widget ClockWidget %}
     </ul>
 
     <ul id="column2" class="col-lg-4 list-unstyled column">
@@ -22,6 +21,7 @@
     </ul>
 </div>
 
+<script type-"text/javascript" src="{% static "dashboard/dashboard.js" %}"></script>
 <script type-"text/javascript" src="{% static "dashboard/widget.js" %}"></script>
 
 <div class="modal fade" id="widgetModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
