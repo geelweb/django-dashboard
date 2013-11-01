@@ -82,3 +82,41 @@ a {color:white;}*/
     overflow: hidden;
 }
 /* End Columns section */
+
+
+
+
+
+
+.edit-box {
+    overflow: hidden;
+    /*background: #333 url(img/widget-content-bg.png) repeat-x;*/
+    margin-bottom: 2px;
+    padding: 10px 0;
+}
+
+.edit-box li.item {
+    padding: 10px 0;
+    overflow: hidden;
+    float: left;
+    width: 100%;
+    clear: both;
+}
+
+.edit-box label {
+    float: left;
+    width: 30%;
+    /*color: #FFF;*/
+    padding: 0 0 0 10px;
+}
+
+.edit-box ul.colors li {
+    width: 20px;
+    height: 20px;
+    border: 1px solid #EEE;
+    float: left;
+    display: inline;
+    margin: 0 5px 0 0;
+    cursor: pointer;
+}
+

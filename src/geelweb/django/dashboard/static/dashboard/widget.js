@@ -28,7 +28,7 @@ var iWidget = {
     },
 
     init : function () {
-        this.attachStylesheet('http://127.0.0.1/~gluchet/metalook/dashboard/widget_js.css');
+        //this.attachStylesheet('/dashboard/widget_js.css');
         this.addWidgetControls();
         this.makeSortable();
     },
@@ -54,6 +54,9 @@ var iWidget = {
                     },function () {
                         $(this).wrap('<div/>').parent().slideUp(function () {
                             $(this).remove();
+                            if (iDashboard) {
+                                iDashboard.removeWidget($(this));
+                            }
                         });
                     });
                 }
@@ -111,6 +114,7 @@ var iWidget = {
 
         $('input',b).keyup(function () {
             $(this).parents(settings.widgetSelector).find('span#title').text( $(this).val().length>20 ? $(this).val().substr(0,20)+'...' : $(this).val() );
+            iDashboard.updateWidget($(this).parents(settings.widgetSelector), {'title': $(this).val()});
         });
         $('ul.colors li',b).click(function () {
 
@@ -122,7 +126,10 @@ var iWidget = {
                 elm.removeClass(thisWidgetColorClass[0]);
             }
 
-            elm.addClass($(this).attr('class').match(colorStylePattern)[0])
+            elm.addClass($(this).attr('class').match(colorStylePattern)[0]);
+            if (iDashboard) {
+                iDashboard.updateWidget($(this).parents(settings.widgetSelector), {'color': $(this).attr('class').match(colorStylePattern)[0]});
+            }
             return false;
         });
     },
@@ -154,7 +161,7 @@ var iWidget = {
         w.css({
             cursor: 'move'
         }).mousedown(function (e) {
-            $sortableItems.css({width:''});
+            w.css({width:''});
             $(this).parent().css({
                 width: $(this).parent().width() + 'px'
             });
