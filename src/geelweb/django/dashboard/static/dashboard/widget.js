@@ -211,6 +211,9 @@ var iWidget = {
             stop: function (e,ui) {
                 $(ui.item).css({width:''}).removeClass('dragging');
                 $(settings.columns).sortable('enable');
+                if (iDashboard) {
+                    iDashboard.updateWidget(ui.item, {'column': '#' + ui.item.parent().attr('id')});
+                }
             }
         });
     }
