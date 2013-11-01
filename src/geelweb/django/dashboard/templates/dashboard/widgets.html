@@ -2,7 +2,8 @@
     <ul class="media-list">
     {% for widget in widgets %}
         <li class="media">
-            <a class="pull-left" href="#"><img class="media-object" src="{{ widget.thumbnail }}" alt="{{ widget.name }}"></a>
+            <a class="pull-left" href="#"
+                onclick="iDashboard.addWidget('{{widget.name}}');"><img class="media-object" src="{{ widget.thumbnail }}" alt="{{ widget.name }}"></a>
             <div class="media-body">
                 <h4 class="media-heading">{{ widget.name }}</h4>
                 <p>{{ widget.description }}</p>

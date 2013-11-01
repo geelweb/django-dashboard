@@ -29,16 +29,24 @@ var iDashboard = {
     {
         var $ = this.jQuery,
             column = $(widget.column),
-            container = $('<li class="widget" id="a-random-slug"></li>');
+            slug = Math.random().toString(36).substring(7),
+            container = $('<li class="widget" id="'+slug+'"></li>');
         column.append(container);
         container.load('/dashboard/widget/load/' + widget.name + '/', function() {
-            iWidget.addWidgetControl($('#a-random-slug'));
-            iWidget.makeWidgetSortable($('#a-random-slug .widget-head'));
+            iWidget.addWidgetControl($('#' + slug));
+            iWidget.makeWidgetSortable($('#'+slug+' .widget-head'));
 
-            $('#a-random-slug .widget-head').addClass(widget.color);
-            $('span#title', '#a-random-slug .widget-head').text(widget.title);
+            if (widget.color) {
+                $('#'+slug+' .widget-head').addClass(widget.color);
+            }
+            $('span#title', '#'+slug+' .widget-head').text(widget.title);
         });
-    }
+    },
+
+    addWidget : function(widget_name)
+    {
+        this.renderWidget({'name': widget_name, 'column': '#column1', 'title': widget_name});
+    },
 };
 
 iDashboard.init();
