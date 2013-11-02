@@ -39,6 +39,20 @@ var iWidget = {
         return (id&&settings.widgetIndividual[id]) ? $.extend({},settings.widgetDefault,settings.widgetIndividual[id]) : settings.widgetDefault;
     },
 
+    decorateWidget : function(w) {
+        var $ = this.jQuery,
+            settings = this.settings;
+        if (!w.has(settings.contentSelector).length) {
+            var c = $('<div class="'+settings.contentSelector.substring(1)+'"></div>');
+            c.html(w.html());
+            w.html(c);
+        }
+        if (!w.has(settings.handleSelector).length) {
+            var h = '<div class="'+settings.handleSelector.substring(1)+'"><span class="widget-title"></span></div>';
+            w.html(h + w.html());
+        }
+    },
+
     addWidgetControl : function (w) {
         var iWidget = this,
             $ = this.jQuery,
@@ -75,7 +89,7 @@ var iWidget = {
             }).appendTo($(settings.handleSelector,w));
 
             var editBox = $('<div class="edit-box" style="display:none;"/>');
-            editBox.append('<ul><li class="item"><label>Change the title?</label><input value="' + $('span#title',w).text() + '"/></li>')
+            editBox.append('<ul><li class="item"><label>Change the title?</label><input value="' + $('span.widget-title',w).text() + '"/></li>')
                 .append((function(){
                     var colorList = '<li class="item"><label>Available colors:</label><ul class="colors">';
                     $(thisWidgetSettings.colorClasses).each(function () {
@@ -113,7 +127,7 @@ var iWidget = {
             settings = this.settings;
 
         $('input',b).keyup(function () {
-            $(this).parents(settings.widgetSelector).find('span#title').text( $(this).val().length>20 ? $(this).val().substr(0,20)+'...' : $(this).val() );
+            $(this).parents(settings.widgetSelector).find('span.widget-title').text( $(this).val().length>20 ? $(this).val().substr(0,20)+'...' : $(this).val() );
             iDashboard.updateWidget($(this).parents(settings.widgetSelector), {'title': $(this).val()});
         });
         $('ul.colors li',b).click(function () {

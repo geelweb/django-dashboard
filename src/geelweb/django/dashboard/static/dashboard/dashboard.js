@@ -21,9 +21,6 @@ var iDashboard = {
         }
 
         return JSON.parse(localStorage.widgets)
-        //return [
-        //    {'name': 'ClockWidget', 'column':'#column2', 'title': 'Paris', 'color': 'color-blue'}
-        //];
     },
 
     renderWidgets : function()
@@ -38,17 +35,17 @@ var iDashboard = {
     {
         var $ = this.jQuery,
             column = $(widget.column),
-            //slug = Math.random().toString(36).substring(7),
             container = $('<li class="widget" id="'+widget.slug+'"></li>');
         column.append(container);
-        container.load('/dashboard/widget/load/' + widget.name + '/', function() {
+        container.load('/dashboard/widget/load/' + widget.name + '/', function(responseText, textStatus, XMLHttpRequest) {
+            iWidget.decorateWidget($('#' + widget.slug));
             iWidget.addWidgetControl($('#' + widget.slug));
             iWidget.makeWidgetSortable($('#'+widget.slug+' .widget-head'));
 
             if (widget.color) {
                 $('#'+widget.slug+' .widget-head').addClass(widget.color);
             }
-            $('span#title', '#'+widget.slug+' .widget-head').text(widget.title);
+            $('span.widget-title', '#'+widget.slug+' .widget-head').text(widget.title);
         });
     },
 
