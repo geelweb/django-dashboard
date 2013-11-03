@@ -28,7 +28,6 @@ var iWidget = {
     },
 
     init : function () {
-        //this.attachStylesheet('/dashboard/widget_js.css');
         this.addWidgetControls();
         this.makeSortable();
     },
@@ -83,8 +82,7 @@ var iWidget = {
                 e.stopPropagation();
             }).click(function(e) {
                 e.stopPropagation();
-                $(this).css({backgroundPosition: '-66px 0', width: '55px'})
-                    .parents(settings.widgetSelector)
+                $(this).parents(settings.widgetSelector)
                     .find('.edit-box').toggle();
             }).appendTo($(settings.handleSelector,w));
 
@@ -161,11 +159,6 @@ var iWidget = {
             iWidget.activateEditBox(this);
         });
 
-    },
-
-    attachStylesheet : function (href) {
-        var $ = this.jQuery;
-        return $('<link href="' + href + '" rel="stylesheet" type="text/css" />').appendTo('head');
     },
 
     makeWidgetSortable : function(w) {
