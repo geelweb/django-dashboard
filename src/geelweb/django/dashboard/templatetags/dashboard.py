@@ -10,9 +10,12 @@ class WidgetsListNode(template.Node):
         return t.render(template.Context({'widgets': registry.widgets.viewvalues()}))
 
 class DashboardNode(template.Node):
+    def __init__(self, nb_cols):
+        self.nb_cols = nb_cols
+
     def render(self, context):
         t=template.loader.get_template('dashboard/index.html')
-        return t.render(template.Context())
+        return t.render(template.Context({'nb_cols': self.nb_cols}))
 
 @register.tag(name='list_widgets')
 def list_widgets(parser, token):
@@ -20,4 +23,8 @@ def list_widgets(parser, token):
 
 @register.tag(name='dashboard')
 def dashboard(parser, token):
-    return DashboardNode()
+    nb_cols = 3
+    bits = token.split_contents()
+    if len(bits) > 1:
+        nb_cols = int(bits[1])
+    return DashboardNode(nb_cols)

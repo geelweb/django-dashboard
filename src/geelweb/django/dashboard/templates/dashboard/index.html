@@ -11,6 +11,7 @@
 </div>
 
 <div id="columns" class="row">
+    {% if nb_cols == 3 %}
     <ul id="column1" class="col-lg-4 list-unstyled column">
     </ul>
 
@@ -19,6 +20,13 @@
 
     <ul id="column3" class="col-lg-4 list-unstyled column">
     </ul>
+    {% elif nb_cols == 2 %}
+    <ul id="column1" class="col-lg-6 list-unstyled column">
+    </ul>
+
+    <ul id="column2" class="col-lg-6 list-unstyled column">
+    </ul>
+    {% endif %}
 </div>
 
 <script type-"text/javascript" src="{% static "dashboard/dashboard.js" %}"></script>
