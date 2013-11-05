@@ -2,6 +2,9 @@
     <div class="widget-head">
         <span class="widget-title">{{title}}</span>
     </div>
+    <div class="edit-box" style="display:none;">
+        <ul>{% block widgetsettings %}{% endblock %}</ul>
+    </div>
     <div class="widget-content">
         {% block widgetcontent %}{% endblock %}
     </div>

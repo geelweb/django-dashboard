@@ -86,17 +86,29 @@ var iWidget = {
                     .find('.edit-box').toggle();
             }).appendTo($(settings.handleSelector,w));
 
-            var editBox = $('<div class="edit-box" style="display:none;"/>');
-            editBox.append('<ul><li class="item"><label>Change the title?</label><input value="' + $('span.widget-title',w).text() + '"/></li>')
+            var editBox = $('<div class="edit-box" style="display:none;"/>'),
+                list = $('<ul></ul>'),
+                boxExists = false;
+
+            if ($(w).find('.edit-box').length) {
+                editBox = $($(w).find('.edit-box')[0]);
+                list = $($(w).find('.edit-box > ul')[0]);
+                boxExists = true;
+            }
+
+            list.append('<li class="item"><label>Change the title?</label><input name="title" value="' + $('span.widget-title',$(w)).text() + '"/></li>')
                 .append((function(){
                     var colorList = '<li class="item"><label>Available colors:</label><ul class="colors">';
                     $(thisWidgetSettings.colorClasses).each(function () {
                         colorList += '<li class="' + this + '"/>';
                     });
                     return colorList + '</ul>';
-                })())
-                .append('</ul>')
-                .insertAfter($(settings.handleSelector,w));
+                })());
+
+            if (!boxExists) {
+                editBox.append(list)
+                    .insertAfter($(settings.handleSelector,w));
+            }
             iWidget.activateEditBox(editBox);
         }
 
@@ -121,17 +133,21 @@ var iWidget = {
 
     activateEditBox : function(b) {
         var iWidget = this,
-            $ = this.jQuery,
-            settings = this.settings;
+            $ = this.jQuery;
 
-        $('input',b).keyup(function () {
-            $(this).parents(settings.widgetSelector).find('span.widget-title').text( $(this).val().length>20 ? $(this).val().substr(0,20)+'...' : $(this).val() );
-            iDashboard.updateWidget($(this).parents(settings.widgetSelector), {'title': $(this).val()});
+        $('input[name="title"]',b).keyup(function () {
+            $(this).parents(iWidget.settings.widgetSelector).find('span.widget-title').text( $(this).val().length>20 ? $(this).val().substr(0,20)+'...' : $(this).val() );
+            iDashboard.updateWidget($(this).parents(iWidget.settings.widgetSelector), {'title': $(this).val()});
+        });
+        $('input[name^="settings"]',b).change(function() {
+            var settings = {};
+            eval($(this).attr('name') + '="'+$(this).val()+'";');
+            iDashboard.updateWidget($(this).parents(iWidget.settings.widgetSelector), {'settings': settings});
         });
         $('ul.colors li',b).click(function () {
 
             var colorStylePattern = /\bcolor-[\w]{1,}\b/,
-                elm = $(this).parents(settings.widgetSelector).find(settings.handleSelector),
+                elm = $(this).parents(iWidget.settings.widgetSelector).find(iWidget.settings.handleSelector),
                 thisWidgetColorClass = elm.attr('class').match(colorStylePattern)
 
             if (thisWidgetColorClass) {
@@ -140,7 +156,7 @@ var iWidget = {
 
             elm.addClass($(this).attr('class').match(colorStylePattern)[0]);
             if (iDashboard) {
-                iDashboard.updateWidget($(this).parents(settings.widgetSelector), {'color': $(this).attr('class').match(colorStylePattern)[0]});
+                iDashboard.updateWidget($(this).parents(iWidget.settings.widgetSelector), {'color': $(this).attr('class').match(colorStylePattern)[0]});
             }
             return false;
         });
