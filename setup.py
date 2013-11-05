@@ -45,7 +45,7 @@ if __name__ == "__main__":
                 ],
         },
         keywords = ['django', 'dashboard', 'widgets'],
-        setup_requires=['django>=1.5', 'django-widgets>=1.0'],
+        #setup_requires=['django>=1.5', 'django-widgets>=1.0'],
         zip_safe=False,
         )
 
