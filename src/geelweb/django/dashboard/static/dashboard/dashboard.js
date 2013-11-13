@@ -93,15 +93,26 @@ var iDashboard = {
             $('span.widget-title', '#'+widget.slug+' .widget-head').text(widget.title);
             $('input[name="title"]', '#'+widget.slug).attr('value', widget.title);
 
-            var settings = $('input[name^="settings["]', '#'+widget.slug);
-            for (var i=0; i<settings.length; i++) {
+            var settings_inputs = $('input[name^="settings["]', '#'+widget.slug);
+            for (var i=0; i<settings_inputs.length; i++) {
                 if (!widget.settings) {
                     continue;
                 }
-                var n = $(settings[i]).attr('name');
+                var n = $(settings_inputs[i]).attr('name');
                 var r = new RegExp("settings.'([^']+)'.");
                 var p = r.exec(n)[1];
-                $(settings[i]).attr('value', widget.settings[p]);
+                $(settings_inputs[i]).attr('value', widget.settings[p]);
+            }
+
+            var settings_selects = $('select[name^="settings["]', '#'+widget.slug);
+            for (var i=0; i<settings_selects.length; i++) {
+                if (!widget.settings) {
+                    continue;
+                }
+                var n = $(settings_selects[i]).attr('name');
+                var r = new RegExp("settings.'([^']+)'.");
+                var p = r.exec(n)[1];
+                $(settings_selects[i]).val(widget.settings[p]);
             }
         });
     },

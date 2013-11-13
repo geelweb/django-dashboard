@@ -139,7 +139,7 @@ var iWidget = {
             $(this).parents(iWidget.settings.widgetSelector).find('span.widget-title').text( $(this).val().length>20 ? $(this).val().substr(0,20)+'...' : $(this).val() );
             iDashboard.updateWidget($(this).parents(iWidget.settings.widgetSelector), {'title': $(this).val()});
         });
-        $('input[name^="settings"]',b).change(function() {
+        $('input[name^="settings"], select[name^="settings"]',b).change(function() {
             var settings = {};
             eval($(this).attr('name') + '="'+$(this).val()+'";');
             iDashboard.updateWidget($(this).parents(iWidget.settings.widgetSelector), {'settings': settings});
