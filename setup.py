@@ -9,7 +9,7 @@ Seupt script to install django-dashboard
 """
 
 __author__ = "Guillaume Luchet <guillaume@geelweb.org>"
-__version__ = "0.1"
+__version__ = "0.1.1"
 
 import os, sys
 from setuptools import setup, find_packages
