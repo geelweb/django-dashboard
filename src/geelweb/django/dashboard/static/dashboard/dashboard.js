@@ -151,8 +151,10 @@ var iDashboard = {
         this.saveDashboardState();
     },
 
-    updateWidget : function(elm, settings={})
+    updateWidget : function(elm, settings)
     {
+        settings = settings || {};
+
         var slug = elm.attr('id');
         for (var i=0; i<this.widgets.length; i++) {
             if (slug == this.widgets[i].slug) {
